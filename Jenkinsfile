@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        node 'k8s-test-node'
+        node 'jenkins-node1'
     }
   
     stages {
