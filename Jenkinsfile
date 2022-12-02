@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh 'echo DEPLOYING...'
                 sh 'envsubst < ${WORKSPACE}/wordpress-deployment.yaml'
-                sh 'kubectl --version'
+                sh 'kubectl version'
                 sh 'echo DEPLOY STAGE OK'
             }
         }
