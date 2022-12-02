@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        node 'jenkins-node1'
+        node 'windows'
     }
   
     stages {
