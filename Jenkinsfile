@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        node 'kube-master'
+        node 'k8s-master'
     }
   
     stages {
