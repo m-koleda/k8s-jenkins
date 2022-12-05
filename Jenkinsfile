@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh 'echo DEPLOYING...'
                 sh 'envsubst < ${WORKSPACE}/wordpress-deployment.yaml'
-                sh 'kubectl apply -k ./'
+                sh 'kubectl apply -k ./${WORKSPACE}'
                 sh 'watch kubectl get nodes'
                 sh 'echo DEPLOY STAGE OK'
             }
