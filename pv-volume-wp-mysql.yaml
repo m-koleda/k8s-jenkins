@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "./mnt/mysql"
+    path: "/mnt/mysql"
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -26,5 +26,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "./mnt/wp"
-
+    path: "/mnt/wp"
