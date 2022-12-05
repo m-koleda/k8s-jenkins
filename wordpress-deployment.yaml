@@ -4,17 +4,27 @@ metadata:
   name: wordpress
   labels:
     app: wordpress
-    owner: maxkoleda
 spec:
-  type: NodePort
   ports:
-    - name: wordpress
-      port: 80
-      targetPort: 80
-      nodePort: 30000
+    - port: 80
   selector:
     app: wordpress
     tier: frontend
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-pv-claim
+  labels:
+    app: wordpress
+    owner: maxkoleda
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,15 +32,11 @@ metadata:
   name: wordpress
   labels:
     app: wordpress
-    tier: frontend
-    owner: maxkoleda
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: wordpress
       tier: frontend
-      owner: maxkoleda
   strategy:
     type: Recreate
   template:
@@ -38,10 +44,9 @@ spec:
       labels:
         app: wordpress
         tier: frontend
-        owner: maxkoleda
     spec:
       containers:
-      - image: wordpress:6.1.1-apache
+      - image: wordpress:4.8-apache
         name: wordpress
         env:
         - name: WORDPRESS_DB_HOST
@@ -49,15 +54,15 @@ spec:
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: root-pass
+              name: mysql-pass
               key: password
         ports:
         - containerPort: 80
           name: wordpress
         volumeMounts:
-        - name: task-pv-storage
+        - name: wordpress-persistent-storage
           mountPath: /var/www/html
       volumes:
-      - name: task-pv-storage
+      - name: wordpress-persistent-storage
         persistentVolumeClaim:
-          claimName: task-pv-claim
+          claimName: wp-pv-claim
