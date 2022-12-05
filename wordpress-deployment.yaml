@@ -20,6 +20,7 @@ metadata:
     app: wordpress
     owner: maxkoleda
 spec:
+  storageClassName: wp
   accessModes:
     - ReadWriteOnce
   resources:
