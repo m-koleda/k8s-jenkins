@@ -12,6 +12,20 @@ spec:
     tier: mysql
   clusterIP: None
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: wordpress
+spec:
+  storageClassName: mysql
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +34,6 @@ metadata:
     app: wordpress
     owner: maxkoleda
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -34,21 +47,21 @@ spec:
         tier: mysql
     spec:
       containers:
-      - image: mysql:5.7
+      - image: mysql:5.6
         name: mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: root-pass
+              name: mysql-pass
               key: password
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: task-pv-storage
+        - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
       volumes:
-      - name: task-pv-storage
+      - name: mysql-persistent-storage
         persistentVolumeClaim:
-          claimName: task-pv-claim
+          claimName: mysql-pv-claim
